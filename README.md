@@ -37,5 +37,5 @@ kafka_env/bin/pip3 install -r requirements.txt
 ## how to run
 
 ```bash
-kafka env/bin/python3 stream.py
+kafka_env/bin/python3 stream.py
 ```
