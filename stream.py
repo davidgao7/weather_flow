@@ -1,36 +1,16 @@
 # python stream process application
 import logging
-from quixstreams import Application
+from requests_sse import EventSource
 
 
 def main():
     logging.info("START")
-    app = Application(
-        broker_address="localhost:9092",
-        loglevel="DEBUG",
-        auto_offset_reset="earliest",
-        consumer_group="weather_processor",
-    )
 
-    input_topic = app.topic("weather_data_demo")
-    output_topic = app.topic("weather_data_processed")
-
-    def transform(msg):
-
-        # e.g. get data and process it
-        celcius = msg["current"]["temperature_2m"]
-        farenheit = (celcius * 9 / 5) + 32
-        kelvin = celcius + 273.15
-
-        new_msg = msg
-        logging.debug("Returning: %s", new_msg)
-
-        return new_msg
-
-    # streaming dataframe
-    sdf = app.dataframe(input_topic)
-    sdf = sdf.apply(transform)
-    sdf = sdf.to_topic(output_topic)
+    with EventSource(
+        "http://github-firehose.libraries.io/events", timeout=30
+    ) as event_source:
+        for event in event_source:
+            logging.info("Got event: %s", event)
 
 
 if __name__ == "__main__":
