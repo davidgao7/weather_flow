@@ -19,5 +19,5 @@ with app.get_producer() as producer:
     producer.produce(
         topic="weather_data_demo",
         key="Boston",
-        value=json.dumps(weather),
+        value=json.dumps(weather, indent=4),
     )
